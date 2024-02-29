@@ -1,9 +1,11 @@
-// Define the buzzer pin
-#define BUZZER_PIN 8
+#include <Servo.h>
 
 // Define the pins for ultrasonic sensor
-int trig = 7;
-int echo = 6;
+int trig = A1;
+int echo = A2;
+
+// Define the servo motor
+Servo servo;
 
 // Variables to store time and distance
 long timeInMicro;
@@ -13,10 +15,12 @@ void setup() {
   // Initialize serial communication
   Serial.begin(9600);
 
-  // Set pin modes for ultrasonic sensor and buzzer
+  // Set pin modes for ultrasonic sensor
   pinMode(trig, OUTPUT); // Trigger pin as output
   pinMode(echo, INPUT);  // Echo pin as input
-  pinMode(BUZZER_PIN, OUTPUT); // Buzzer pin as output
+
+  // Attach servo to pin 10
+  servo.attach(10);
 }
 
 void loop() {
@@ -36,15 +40,15 @@ void loop() {
   // Print distance to serial monitor
   Serial.println(distanceInCm);
 
-  // Check if distance is less than or equal to 20cm
-  if (distanceInCm <= 20) { 
-    // If distance is within 20cm, turn on the buzzer
-    digitalWrite(BUZZER_PIN, HIGH);
+  // Rotate servo based on distance
+  if (distanceInCm <= 30) { 
+    // If distance is within 30cm, rotate the servo motor to -90 degrees
+    servo.write(-90);
   } else {
-    // Otherwise, turn off the buzzer
-    digitalWrite(BUZZER_PIN, LOW);
+    // Otherwise, keep the servo motor at 90 degrees
+    servo.write(90);
   }
 
   // Delay for stability
-  delay(50);
+  delay(100);
 }
